@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "JanelaJogo",
+      "request": "launch",
+      "mainClass": "JanelaJogo",
+      "projectName": "SkyJump_d6852b0b"
+    },
+    {
+      "type": "java",
+      "name": "Executar com Terminal Externo",
+      "request": "launch",
+      "mainClass": "${file}",
+      "console": "externalTerminal"
+    }
+  ]
+}
