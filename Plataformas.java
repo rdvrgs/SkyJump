@@ -1,6 +1,8 @@
 public class Plataformas {
 
-    // ATRIBUTOS DAS PLATAFORMAS
+    /*  ==============================================================
+    Este arquivo é destinado a criação dos atributos básicos das plataformas, sendo o seu eixo no X e Y.
+    ============================================================== */
     int x_plataforma;
     int y_plataforma;
 

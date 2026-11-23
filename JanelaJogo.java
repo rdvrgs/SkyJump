@@ -1,4 +1,6 @@
-// BIBLIOTECAS
+/* ==============================================================
+BIBLIOTECAS USADAS
+============================================================== */
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -10,26 +12,37 @@ public class JanelaJogo {
 
     public static void main(String[] args) {
 
-        JFrame janela_jogo = new JFrame(); // CRIACAO DA JANELA
-
-        janela_jogo.setSize(540, 960); // DIMENSOES
+        /* ==============================================================
+        CRIAÇÃO DA JANELA, SEU TAMANHO E SEU TITULO
+        ============================================================== */
+        JFrame janela_jogo = new JFrame();
+        janela_jogo.setSize(540, 960);
+        janela_jogo.setTitle("SKY JUMP");
         /*
          * ========================================
          * O ponto (0,0) do Size fica no canto superior esquerdo
          * ===========================================
          */
 
-        janela_jogo.setTitle("SKY JUMP"); // TITULO
-        janela_jogo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // FECHA AO CLICAR NO X
-        janela_jogo.setLocationRelativeTo(null); // ABRIR A JANELA DO JOGO NO MEIO DA TELA
-        janela_jogo.setResizable(false); // NAO PERMITIR ALTERAÇÃO NO TAMANHO DA TELA
+
+        /* ==============================================================
+        FECHAR JANELA AO CLICAR NO X | ABRIR ELA NO MEIO DA TELA E NÃO PODER MODIFICAR SEU TAMANHO/ESCALA
+        ============================================================== */
+        janela_jogo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        janela_jogo.setLocationRelativeTo(null);
+        janela_jogo.setResizable(false);
         
-        TelaJogo tela_jogo = new TelaJogo(); // CRIAR PAINEL DO JOGO
-        janela_jogo.add(tela_jogo); // ADICIONAR O PAINEL DENTRO DO JOGO
+
+        /* ==============================================================
+        CRIAÇÃO DO PAINEL E ADICIONAR ELE DENTRO DO JOGO
+        ============================================================== */
+        TelaJogo tela_jogo = new TelaJogo();
+        janela_jogo.add(tela_jogo);
 
 
-        // ===========================================
-        // Barra do Topo
+        /* ==============================================================
+        CRIAÇÃO DA BARRA DO TOPO E SEUS ITENS | ADIÇÃO DOS ITENS DENTRO DO MENU CRIADO
+        ============================================================== */
         JMenuBar barra_topo = new JMenuBar();
         JMenu menu_opcoes = new JMenu("Opções");
         JMenuItem reinicio_jogo = new JMenuItem("Novo Jogo");
@@ -39,12 +52,14 @@ public class JanelaJogo {
         barra_topo.add(menu_opcoes);
         janela_jogo.setJMenuBar(barra_topo);
 
-        // Ações dos botões
+        /* ==============================================================
+        AÇÕES DOS BOTÕES | SAIR DO JOGO SALVA ELE E FECHA | REINICIO FAZ A AÇÃO DE REINICIAR | CLICAR NO X TAMBÉM SALVA O JOGO 
+        ============================================================== */
         sair_jogo.addActionListener(e -> {
             tela_jogo.salvar_jogo();
             System.exit(0);
         });
-        reinicio_jogo.addActionListener(e -> tela_jogo.reiniciarJogo()); // REINICIA A PARTIDA
+        reinicio_jogo.addActionListener(e -> tela_jogo.reiniciarJogo());
 
         janela_jogo.addWindowListener(new WindowAdapter() {
             @Override
@@ -53,8 +68,6 @@ public class JanelaJogo {
                 tela_jogo.salvar_jogo();
             }
         });
-
-        // ===========================================
 
         janela_jogo.setVisible(true); // JANELA APARECE NA TELA
     }

@@ -1,4 +1,6 @@
-// BIBLIOTECAS
+/* ==============================================================
+BIBLIOTECAS USADAS
+============================================================== */
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.awt.Color;
@@ -22,12 +24,20 @@ import java.io.FileReader;
 
 public class TelaJogo extends JPanel implements ActionListener, KeyListener {
 
-    // EIXOS DO PERSONAGEM
+    /* ==============================================================
+    VARIAVEIS DO PERSONAGEM:
+    - Posição no eixo X e Y
+    - Pegar o movimento dele para os lados
+    - Guardar o lado que ele está virado
+    ============================================================== */
     int posicao_x_personagem = 260;
     int posicao_y_personagem = 800;
-    boolean mov_esquerda = false, mov_direita = false; // APURAR O MOVIMENTO DO BONEQUINHO
-    boolean olhando_esquerda = false; // PEGAR LADO QUE BONECO OLHOU
+    boolean mov_esquerda = false, mov_direita = false;
+    boolean olhando_esquerda = false;
 
+    /* ==============================================================
+    IMAGENS (SPRITES) DESENHADAS NA TELA DO JOGO (FUNDO, PLATAFORMA E AS 4 POSES DO BONEQUINHO)
+    ============================================================== */
     Image img_fundo;
     Image img_plataforma;
     Image img_parado_direita;
@@ -35,22 +45,37 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
     Image img_corrida_direita;
     Image img_corrida_esquerda;
 
-    int velocidade_y_personagem = 0; // VELOCIDADE SUBINDO OU DESCENDO NO INSTANTE
-    int gravidade = 1; // FORÇA QUE PUXARÁ O PERSONAGEM PARA BAIXO
-    int pontuacao_jogador = 0; // COMEÇA EM 0
-    Random sorteador = new Random(); // SORTEADOR
+    /* ==============================================================
+    ÍCONES DO BONEQUINHO REDIMENSIONADOS PARA AS JANELINHAS DE MENU, VITÓRIA E DERROTA
+    ============================================================== */
+    ImageIcon img_tela_derrota;
+    ImageIcon img_tela_vitoria;
 
+    /* ==============================================================
+    VARIAVEIS DIVERSAS: VELOCIDADE SUBINDO E DESCENDO, FORÇA DA GRAVIDADE PARA BAIXO E PONTUAÇÃO
+    ============================================================== */
+    int velocidade_y_personagem = 0;
+    int gravidade = 1;
+    int pontuacao_jogador = 0;
+
+    /* ==============================================================
+    GERAR AS PLATAFORMAS EM POSIÇÕES ALEATÓRIAS | CRIACAO DE ARRAY PARA VARIAS PLATAFORMAS | TEMPO DE ATUALIZAÇÃO PARA RODAR BEM, SERA DEFINIDO COMO 50 FPS.
+    ============================================================== */
+    Random sorteador = new Random();
     ArrayList<Plataformas> plataformas = new ArrayList<>();
+    Timer tempo_contador;
 
-    Timer tempo_contador; // 
-
-    // CRIAÇÃO DE METODO
+    /* ==============================================================
+    CRIAÇÃO DO PAINTCOMPONENT | PINTAR O FUNDO DA TELA | FOTO DO PERSONAGEM COM BASE NOS MOVIMENTOS | DESENHO DAS PLATAFORMAS | ESTÉTICA DA PONTUAÇÃO
+    ============================================================== */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        g.drawImage(img_fundo, 0, 0, 540, 960, this); // DESENHA O FUNDO NA TELA TODA
+        // ============================================
+        g.drawImage(img_fundo, 0, 0, 540, 960, this);
 
+        // ============================================
         if (mov_esquerda == true) 
         {
             g.drawImage(img_corrida_esquerda, posicao_x_personagem, posicao_y_personagem, 40, 40, this);
@@ -68,47 +93,67 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
             g.drawImage(img_parado_direita, posicao_x_personagem, posicao_y_personagem, 40, 40, this);
         }
 
-        g.setColor(Color.GREEN);
+        // ============================================
         for (Plataformas p : plataformas) {
            g.drawImage(img_plataforma, p.x_plataforma, p.y_plataforma, 100, 20, this);
         }
-        // DESENHA O CHAO ENQUANTO O JOGADOR AINDA NAO SUBIU (0 PONTOS)
+        
         if (pontuacao_jogador == 0) {
             g.drawImage(img_plataforma, 0, 860, 540, 70, this);
         }
+
+        // ============================================
         g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 20)); // DEFINE FONTE ARIAL, NEGRITO, TAMANHO 16
-        g.drawString("Pontos: " + pontuacao_jogador, 20, 30); // Mostra os pontos 
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Pontos: " + pontuacao_jogador, 20, 30);
     }
 
-    // CONSTRUTOR
+    /* ==============================================================
+    CRIAÇÃO DO CONSTRUTOR:
+    - Carregar imagens e icones do bonequinho, das plataformas e do fundo do jogo
+    - Criar as 8 plataformas em locais aleatórios
+    - Mostrar menu inicial antes do jogo começar
+    - Definir a atualização como 50 FPS
+    - Permitir foco do teclado e escutar as teclas clicadas
+    ============================================================== */
     public TelaJogo() {
 
-        // FOTOS DO BONEQUINHO, PLATAFORMA E FUNDO
+        // Pegar fotos da pasta de Imagens e cria-las
         img_fundo = new ImageIcon("Imagens/fundo.png").getImage();
         img_plataforma = new ImageIcon("Imagens/plataforma.png").getImage();
         img_parado_direita = new ImageIcon("Imagens/parado_direita.png").getImage();
         img_parado_esquerda = new ImageIcon("Imagens/parado_esquerda.png").getImage();
         img_corrida_direita = new ImageIcon("Imagens/corrida_direita.png").getImage();
         img_corrida_esquerda = new ImageIcon("Imagens/corrida_esquerda.png").getImage();
+        img_tela_derrota = new ImageIcon(img_parado_direita.getScaledInstance(64, 64, Image.SCALE_SMOOTH));
+        img_tela_vitoria =  new ImageIcon(img_corrida_direita.getScaledInstance(64, 64, Image.SCALE_SMOOTH));
 
+        // Cria as 8 plataformas, sorteando o eixo X entre 0 e 439, de forma que não saia da tela | Distribui o Y de 120 em 120 pixels, para ficar com espaço certinho entre eles
         for (int i = 0; i < 8; i++) {
-            int xSorteado = sorteador.nextInt(440); // SORTEIA NA POSICAO HORIZONTAL QUE CABE NA LARGURA 540px
-            int yCalculado = i * 120 + 60; // DISTRUBUIR 8 PLATAFORMAS NO EIXO Y
+            int xSorteado = sorteador.nextInt(440);
+            int yCalculado = i * 120 + 60;
             plataformas.add(new Plataformas(xSorteado, yCalculado));
         }
 
-        menu_inicial(); // MOSTRA O MENU INICIAL ANTES DE COMECAR O RELOGIO
+        // ============================================
+        menu_inicial();
 
-        // Definir o Timer como 20 milissegundos por atualização na telaJogo.
+        // Definir o Timer como  20milissegundos por atualização na telaJogo.
         tempo_contador = new Timer(20, this);
         tempo_contador.start();     
 
-        setFocusable(true); // PERMITIR FOCO DO TECLADO
-        addKeyListener(this); // AVISAR PAINEL QUE O TelaJogo ESCUTA AS TECLAS CLICADAS.
+        // ============================================
+        setFocusable(true);
+        addKeyListener(this); 
     }
 
-    // CALCULO DE VELOCIDADES DO MOVIMENTO
+    /* ==============================================================
+    CRIAÇÃO DO ACTION PERFORMED | VERIFICAR MOVIMENTOS
+    - Se foi para a esquerda, personagem anda 10 posicoes para esquerda | Se foi para direita, anda 10 posicoes para direita
+    - Se sair da tela por um lado, retorna pelo outro
+    - Gravidade aumenta a velocidade de queda
+    - Velocidade atualiza a posição Y do bonequinho, fazendo ele subir ou descer
+    ============================================================== */
     public void actionPerformed(ActionEvent e)
     {
         if (mov_esquerda == true)
@@ -120,7 +165,7 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
             posicao_x_personagem = posicao_x_personagem + 10;
         }
 
-        // SAIR DE UM LADO DA TELA E APARECER DO OUTRO
+        // ============================================
         if (posicao_x_personagem < 0)
         {
             posicao_x_personagem = 500;
@@ -130,10 +175,24 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
             posicao_x_personagem = 0;
         }
 
-        velocidade_y_personagem = velocidade_y_personagem + gravidade; // GRAVIDADE AUMENTA VELOCIDAD DA QUEDA
-        posicao_y_personagem = posicao_y_personagem + velocidade_y_personagem; // AUMENTAR VELOCIDADE DO PERSONAGEM
+        // ============================================
+        velocidade_y_personagem = velocidade_y_personagem + gravidade;
 
-        // TESTAR A COLISÃO
+        // LIMITA A VELOCIDADE MÁXIMA DE QUEDA EM 15px POR QUADRO, EVITANDO QUE O BONECO ATRAVESSE AS PLATAFORMAS CAINDO RÁPIDO
+        // Testando, vi esse bug que as vezes atravessava algumas plataformas. Assim, a velocidade é até 15, evitando que ele atravesse.
+        if (velocidade_y_personagem > 15)
+        {
+            velocidade_y_personagem = 15;
+        }
+
+        posicao_y_personagem = posicao_y_personagem + velocidade_y_personagem;
+
+        /* ==============================================================
+        VERIFICAR SE O PERSONAGEM ENCOSTOU EM ALGO
+        - Se o personagem estiver caindo, verifica se ele bateu em alguma plataforma:
+            - Cria duas áreas de colisão, uma nos pés do bonequinho e outra no topo da plataforma. 
+            - Se encostarem, muda a velocidade Y para -20 para pular.
+        ============================================================== */
         if (velocidade_y_personagem > 0) // TESTE SE ESTA CAINDO
         {
             for (Plataformas p : plataformas) // BATEU EM ALGUMA PLATAFORMA?
@@ -149,7 +208,12 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
             }
         }
 
-        // SUBIR A TELA
+        /* ==============================================================
+        SE O PERSONAGEM SUBIU MAIS DO QUE METADE DA TELA:
+        - Deixar ele sempre no meio da tela
+        - Buscar entre as 8 plataformas, elas descem e ele sobe
+        - Quando uma plataforma passa do fundo da tela, lá em baixo, ela retorna no topo em novo X e soma +10 pontos para o jogador
+        ============================================================== */
         if (posicao_y_personagem < 400)
         {
             posicao_y_personagem = 400; // PERSONAGEM FICA NO MEIO 
@@ -168,12 +232,21 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
             }
         }
 
-        // COMECO DO JOGO, BONECO NO CHAO
+        /* ==============================================================
+        VERIFICAÇÕES DO BONEQUINHO
+        - Se estiver no início do jogo e encostar no chão, ele pula sem morrer
+        - Se ele passar do limite da tela, ele morreu, dai:   
+            - Apaga o json, pois ele morreu
+            - Exibe o menu do que deseja fazer
+        - Se ele conquistar os 1000 de pontuação:
+            - Apaga o json, pois ele venceu
+            - Exibe o menu do que ele deseja fazer
+        ============================================================== */
         if (pontuacao_jogador == 0 && posicao_y_personagem >= 820) {
             velocidade_y_personagem = -20;
         }
 
-        // DERROTA OU VITORIA
+        // ======================================================
         if (posicao_y_personagem > 960)
         {
             tempo_contador.stop();
@@ -181,7 +254,7 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
 
             String[] opcoes = {"Recomeçar", "Sair do Jogo"};
 
-            int escolha = JOptionPane.showOptionDialog(this, "FIM DE JOGO!\nVocê caiu lá para baixo e está eliminado.\nPontos conquistados: " + pontuacao_jogador, "Fim de Jogo", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcoes, opcoes[0]);
+            int escolha = JOptionPane.showOptionDialog(this, "FIM DE JOGO!\nVocê caiu lá para baixo e está eliminado.\nPontos conquistados: " + pontuacao_jogador, "Fim de Jogo", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, img_tela_derrota, opcoes, opcoes[0]);
 
             if (escolha == 0)
             {
@@ -193,16 +266,30 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
             }
         }
 
+        // ======================================================
         if (pontuacao_jogador >= 1000)
         {   
             tempo_contador.stop();
-            JOptionPane.showMessageDialog(this, "PARABENS CARA!\nVocê venceu o jogo atingindo os 1000 pontos");
+            String[] opcoes = {"Jogar Novamente", "Sair do Jogo"};
+            new File("conteudo_salvo.json").delete();
+            int escolha = JOptionPane.showOptionDialog(this, "PARABÉNS!\nVocê venceu o jogo atingindo " + pontuacao_jogador + " pontos!", "Vitória!" ,JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, img_tela_vitoria, opcoes, opcoes[0]);
+
+            if (escolha == 0)
+            {
+                reiniciarJogo();
+            }
+            else
+            {
+                System.exit(0);
+            }
         }
 
         repaint();
     }
 
-    // SEGURAR NA TECLA FAZ UMA AÇÃO
+    /* ==============================================================
+    VERIFICA A TECLA PRESSIONADA E TECLA CLICADA
+    ============================================================== */
     public void keyPressed(KeyEvent e)
     {
         // SE CLICAR 'A' ou '<-' ANDA PARA ESQUERDA
@@ -221,12 +308,12 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
 
     public void keyReleased(KeyEvent e)
     {
-        // SE CLICAR 'A' ou '<-' ANDA PARA ESQUERDA
+        // SE SOLTAR 'A' ou '<-', PARA DE ANDAR PARA ESQUERDA
         if(e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT)
         {
             mov_esquerda = false;
         }
-        // 'D' ou '->' ANDA PARA DIREITA
+        // SE SOLTAR 'D' ou '->', PARA DE ANDAR PARA DIREITA
         else if(e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT)
         {
             mov_direita = false;
@@ -236,7 +323,13 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
     public void keyTyped(KeyEvent e)
     {}
 
-    // VOLTA O JOGO PARA O COMECO
+    /* ==============================================================
+    REINICIO DO JOGO
+    - Faz com que o bonequinho fique no meio em baixo da tela
+    - Com velocidade e pontuação zerados
+    - Começa a atualizar de novo
+    - Zera os movimentos
+    ============================================================== */
     public void reiniciarJogo() 
     {
         // Posições, velocidade, pontuacao e tempo reiniciados
@@ -251,12 +344,16 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
         mov_direita = false;
     }
 
-    // METODO PARA SALVAR ESTADO DO JOGO QUANDO FECHAMOS ELE
+    /* ==============================================================
+    METODO PARA SALVAR O JOGO
+    - Salva o progresso dentro da classe de EstadoJogo
+    - Converter para o JSON
+    - Salvar no arquivo "conteudo_salvo.json" em formato JSON
+    ============================================================== */
     public void salvar_jogo()
     {
         try
         {
-            // SALVAR O QUE CRIAMOS DENTRO DA CLASSE EstadoJogo.java
             EstadoJogo estado = new EstadoJogo();
             estado.posicao_x_personagem = posicao_x_personagem;
             estado.posicao_y_personagem = posicao_y_personagem;
@@ -264,10 +361,10 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
             estado.velocidade_y_personagem = velocidade_y_personagem;
             estado.plataformas = plataformas;
 
-            Gson gson = new Gson(); // CONVERSOR JSON
-            FileWriter salvar_json = new FileWriter("conteudo_salvo.json"); // SALVA NO ARQUIVO
-            gson.toJson(estado, salvar_json); // ESCREVE NO ARQUIVO EM FORMATO JSON
-            salvar_json.close(); // SALVA E FECHA
+            Gson gson = new Gson();
+            FileWriter salvar_json = new FileWriter("conteudo_salvo.json");
+            gson.toJson(estado, salvar_json);
+            salvar_json.close();
         }
         catch (Exception erro)
         {
@@ -275,16 +372,22 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    // METODO PARA CARREGAR O JOGO QUE FOI SALVO
+    /* ==============================================================
+    METODO PARA CARREGAR O JOGO
+    - Le o arquivo "conteudo_salvo.json" e passa para a classe de EstadoJogo
+    - Converter o JSON
+    - Carrega o progresso que foi salvo dentro da classe de EstadoJogo
+    ============================================================== */
     public void carregar_jogo()
     {
         try
         {
-            Gson gson = new Gson(); // CONVERSON JSON
+            Gson gson = new Gson();
             FileReader ler_json = new FileReader("conteudo_salvo.json");
             EstadoJogo estado = gson.fromJson(ler_json, EstadoJogo.class);
             ler_json.close();
 
+            // VERIFICA SE O JSON É VÁLIDO | NÃO ESTÁ VAZIO, NÃO DEU GAME OVER E NÃO VENCEU E DAI RESTAURA O JOGO
             if (estado != null && estado.posicao_y_personagem <= 960 && estado.pontuacao_jogador < 1000)
             {
                 posicao_x_personagem = estado.posicao_x_personagem;
@@ -296,34 +399,38 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
         }
         catch (Exception erro)
         {   
-            /* SE NÃO TIVER NADA SALVO, COMEÇA UM JOGO DO ZERO */
+            // SE NÃO TIVER NADA SALVO, COMEÇA UM JOGO DO ZERO
             System.out.println("Nenhum jogo salvo.");
         }
     }
 
-    // METODO DE MENU DE OPCOES
+    /* ==============================================================
+    METODO PARA INFORMAÇÕES DO MENU
+    - Pega o JSON
+    - Verifica se tem algo salvo nele. Se tiver, exibe o menu com CONTINUAR JOGO
+    - Se não tiver nada, exibe somente as outras opções
+    ============================================================== */
     public void menu_inicial()
     {
         File arquivo_salvo = new File("conteudo_salvo.json");
 
-        // SE EXISTIR ALGO SALVO, PEGAR:
         if (arquivo_salvo.exists())
         {
             String[] opcoes = {"CONTINUAR JOGO", "NOVO JOGO", "SAIR DO JOGO"};
 
-            int escolha = JOptionPane.showOptionDialog(this, "Você tem uma partida salva!\nO que deseja fazer agora?", "SKY JUMP - Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opcoes, opcoes[0]);
+            int escolha = JOptionPane.showOptionDialog(this, "Você tem uma partida salva!\nO que deseja fazer agora?", "SKY JUMP - Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, img_tela_vitoria, opcoes, opcoes[0]);
 
-             if (escolha == 0) 
+            if (escolha == 0) 
             {
-                carregar_jogo(); // CONTINUA DE ONDE PAROU
+                carregar_jogo();
             } 
             else if (escolha == 1) 
             {
-                arquivo_salvo.delete(); // APAGA O SAVE E COMECA DO ZERO
+                arquivo_salvo.delete();
             } 
             else 
             {
-                System.exit(0); // SAI DO JOGO
+                System.exit(0);
             }
         }
 
@@ -331,12 +438,12 @@ public class TelaJogo extends JPanel implements ActionListener, KeyListener {
         {
             String[] opcoes = {"NOVO JOGO", "SAIR DO JOGO"};
             
-            int escolha = JOptionPane.showOptionDialog(this, "Bem-vindo ao SKY JUMP!", "SKY JUMP - Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcoes, opcoes[0]);
+            int escolha = JOptionPane.showOptionDialog(this, "Bem-vindo ao SKY JUMP!", "SKY JUMP - Menu", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, img_tela_vitoria, opcoes, opcoes[0]);
 
             if (escolha != 0)
             {
                 System.exit(0);
             }
-        };
+        }
     }
 }
