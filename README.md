@@ -1,4 +1,4 @@
-<img width="2000" height="800" alt="readme-image" src="https://github.com/user-attachments/assets/d70bf052-ebfa-4834-8379-5e70d5ab65d6" />
+<img width="1600" height="800" alt="red-bg" src="https://github.com/user-attachments/assets/aedbcf8f-42f9-49c6-87bc-e402ea4545ac" />
 
 # ☁️ Sky Jump — Jogo 2D usando Java Swing 🏃‍♂️
 
