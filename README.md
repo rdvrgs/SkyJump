@@ -1,4 +1,4 @@
-# ☁️ Sky Jump — Jogo 2D usando Java Swing
+# ☁️ Sky Jump — Jogo 2D usando Java Swing 🏃‍♂️
 
 Trabalho 2 da disciplina de **Programação II (2026/02)**.
 
@@ -12,7 +12,7 @@ Um jogo 2D de plataforma vertical inspirado no *Sky Jump* do jogo *Pou*, desenvo
 * **Persistência automática:** Ao fechar a janela pelo botão **X** ou em **Opções → Sair do jogo**, o progresso da partida (posição, velocidade, pontuação e posições das 8 plataformas) é salvo automaticamente em `conteudo_salvo.json`.
 * **Menu inteligente:**
   * Se houver uma partida salva pendente, exibe **CONTINUAR JOGO**, **NOVO JOGO** e **SAIR DO JOGO**.
-  * Se não houver save pendente (ou após vitória/derrota), exibe apenas **NOVO JOGO** e **SAIR DO JOGO**.
+  * Se não houver um save pendente (ou após vitória/derrota), exibe apenas **NOVO JOGO** e **SAIR DO JOGO**.
 
 ---
 
