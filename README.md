@@ -42,7 +42,7 @@ Um jogo 2D de plataforma vertical inspirado no *Sky Jump* do jogo *Pou*, desenvo
 ### Requisitos
 * **Java JDK 8 ou superior** instalado.
 
-### Opção 1 — Via IDE (VS Code / Antigravity / Eclipse / IntelliJ)
+### Opção 1 — Via IDE
 1. Clone ou baixe este repositório.
 2. Abra a pasta `SkyJump` na sua IDE (a pasta `lib/gson-2.10.1.jar` já está incluída no projeto).
 3. Execute o arquivo **`JanelaJogo.java`**.
