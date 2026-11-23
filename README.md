@@ -47,11 +47,11 @@ Um jogo 2D de plataforma vertical inspirado no *Sky Jump* do jogo *Pou*, desenvo
 2. Extraia o arquivo `SkyJump-v1.0.zip` em uma pasta.
 3. Dê **dois cliques** no arquivo **`SkyJump.jar`** (ou execute `java -jar SkyJump.jar` no terminal).
 
-### Opção 2 — Via Terminal
-Primeiro, abra o terminal e entre na pasta do projeto (`cd caminho/para/SkyJump`):
+### Opção 2 — Clonar e Compilar via Terminal
 
 **No Windows (PowerShell / CMD):**
 ```powershell
+git clone https://github.com/rdvrgs/SkyJump.git
 cd SkyJump
 javac -encoding UTF-8 -cp ".;lib/gson-2.10.1.jar" JanelaJogo.java
 java -cp ".;lib/gson-2.10.1.jar" JanelaJogo
@@ -59,6 +59,7 @@ java -cp ".;lib/gson-2.10.1.jar" JanelaJogo
 
 **No Linux / macOS:**
 ```bash
+git clone https://github.com/rdvrgs/SkyJump.git
 cd SkyJump
 javac -encoding UTF-8 -cp ".:lib/gson-2.10.1.jar" JanelaJogo.java
 java -cp ".:lib/gson-2.10.1.jar" JanelaJogo
