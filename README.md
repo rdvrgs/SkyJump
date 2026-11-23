@@ -42,12 +42,10 @@ Um jogo 2D de plataforma vertical inspirado no *Sky Jump* do jogo *Pou*, desenvo
 ### Requisitos
 * **Java JDK 8 ou superior** instalado.
 
-### Opção 1 — Executar Direto (Sem compilar)
-1. Clone ou baixe este repositório (mantendo `SkyJump.jar`, `Imagens/` e `lib/` na mesma pasta).
-2. Dê **dois cliques** no arquivo **`SkyJump.jar`** ou execute no terminal:
-```bash
-cd SkyJump
-java -jar SkyJump.jar
+### Opção 1 — Baixar e Jogar (Sem `git clone` e sem compilar!)
+1. Baixe a versão pronta para jogar: **[⬇️ Baixar Sky Jump v1.0](https://github.com/rdvrgs/SkyJump/releases/latest)**
+2. Extraia o arquivo `SkyJump-v1.0.zip` em uma pasta.
+3. Dê **dois cliques** no arquivo **`SkyJump.jar`** (ou execute `java -jar SkyJump.jar` no terminal).
 ```
 
 ### Opção 2 — Via Terminal
